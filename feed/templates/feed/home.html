@@ -1,0 +1,106 @@
+{% extends 'feed/base.html' %}
+{% block title %}Home · CodeAlpha Social{% endblock %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm mb-4 border-0">
+            <div class="card-body">
+                <h2 class="h4 mb-3">Mini Social Media Platform</h2>
+                <p class="text-muted mb-0">Built for CodeAlpha Task 2 with user profiles, posts, comments, likes, and follows.</p>
+            </div>
+        </div>
+
+        {% if request.user.is_authenticated %}
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+                <h3 class="h5 mb-3">Create a post</h3>
+                <form method="post" action="{% url 'create_post' %}">
+                    {% csrf_token %}
+                    {{ post_form.content }}
+                    <div class="text-end mt-3">
+                        <button class="btn btn-primary">Post now</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+
+        {% for post in posts %}
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <a class="text-decoration-none fw-semibold" href="{% url 'profile' post.author.username %}">@{{ post.author.username }}</a>
+                        <div class="small text-muted">{{ post.created_at|date:'M d, Y · H:i' }}</div>
+                    </div>
+                </div>
+                <p class="fs-6 mb-3">{{ post.content }}</p>
+                <div class="d-flex gap-2 flex-wrap align-items-center mb-3">
+                    <span class="badge text-bg-light">{{ post.like_count }} likes</span>
+                    <span class="badge text-bg-light">{{ post.comment_count }} comments</span>
+                    {% if request.user.is_authenticated %}
+                    <form method="post" action="{% url 'toggle_like' post.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="next_url" value="{{ request.path }}">
+                        <button class="btn btn-sm {% if post.is_liked %}btn-danger{% else %}btn-outline-danger{% endif %}">
+                            {% if post.is_liked %}Unlike{% else %}Like{% endif %}
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+
+                <div class="comment-box">
+                    {% for comment in post.comments.all %}
+                        <div class="comment-item mb-2">
+                            <strong><a class="text-decoration-none" href="{% url 'profile' comment.author.username %}">@{{ comment.author.username }}</a></strong>
+                            <span>{{ comment.content }}</span>
+                            <div class="small text-muted">{{ comment.created_at|date:'M d, Y · H:i' }}</div>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted small mb-2">No comments yet.</p>
+                    {% endfor %}
+                </div>
+
+                {% if request.user.is_authenticated %}
+                <form method="post" action="{% url 'add_comment' post.id %}" class="mt-3">
+                    {% csrf_token %}
+                    <input type="hidden" name="next_url" value="{{ request.path }}">
+                    {{ post.comment_form.content }}
+                    <div class="text-end mt-2">
+                        <button class="btn btn-sm btn-outline-primary">Add comment</button>
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center py-5">
+                <h3 class="h5">No posts yet</h3>
+                <p class="text-muted mb-0">Create the first post after registering an account.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm border-0 sticky-lg-top" style="top: 1rem;">
+            <div class="card-body">
+                <h3 class="h5 mb-3">Suggested profiles</h3>
+                {% if suggested_users %}
+                    {% for user in suggested_users %}
+                        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                            <div>
+                                <a class="text-decoration-none fw-semibold" href="{% url 'profile' user.username %}">@{{ user.username }}</a>
+                                <div class="small text-muted">{{ user.post_count }} post{{ user.post_count|pluralize }}</div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted small mb-0">Register to build your network and follow other users.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

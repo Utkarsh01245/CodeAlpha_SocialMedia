@@ -1,0 +1,18 @@
+{% extends 'feed/base.html' %}
+{% block title %}Edit profile · CodeAlpha Social{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7 col-lg-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h1 class="h3 mb-3">Edit profile</h1>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button class="btn btn-primary w-100">Save changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
