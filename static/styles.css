@@ -1,0 +1,39 @@
+body {
+    background: linear-gradient(180deg, #f5f7fb 0%, #eef2ff 100%);
+    min-height: 100vh;
+}
+
+textarea, input[type="text"], input[type="password"], input[type="email"] {
+    width: 100%;
+    border: 1px solid #ced4da;
+    border-radius: 0.75rem;
+    padding: 0.75rem 0.9rem;
+    background: #fff;
+}
+
+textarea:focus, input:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.15);
+}
+
+.comment-item {
+    background: #f8fafc;
+    border-radius: 0.75rem;
+    padding: 0.65rem 0.85rem;
+}
+
+.profile-header {
+    background: linear-gradient(135deg, #312e81 0%, #4f46e5 60%, #7c3aed 100%);
+    color: white;
+}
+
+.profile-header .text-muted,
+.profile-header a,
+.profile-header .small {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.card {
+    border-radius: 1rem;
+}
